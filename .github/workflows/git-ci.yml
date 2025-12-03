@@ -39,4 +39,4 @@ jobs:
  
       - name: Scan Trivy
         run: |
-          trivy image --severity HIGH,CRITICAL fastapi-app
+          trivy image --exit-code 1 --severity HIGH,CRITICAL fastapi-app
