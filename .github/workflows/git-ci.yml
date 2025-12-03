@@ -35,11 +35,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y curl
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
-
+          
       - name: Scan Trivy
         run: |
           trivy image --exit-code 1 --severity HIGH,CRITICAL fastapi-app
- 
-      # - name: Scan Trivy
-      #   run: |
-      #     trivy image --exit-code 1 --severity HIGH,CRITICAL fastapi-app
+
+      - name: Push Docker Image
+        run: |
+          docker push fastapi-app
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: Set up Kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/myapp-deployment myapp-container=fastapi-app
+          kubectl rollout status deployment/myapp-deployment
