@@ -37,6 +37,6 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
  
-      - name: Scan Trivy Scan
+      - name: Scan Trivy
         run: |
           trivy image --severity HIGH,CRITICAL fastapi-app
