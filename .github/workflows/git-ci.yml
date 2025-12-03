@@ -25,12 +25,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
-      - name: Cleanup Docker
-        run: |
-          docker system prune -af
-          docker volume prune -f
-          sudo rm -rf /tmp/*
-
       # Runs a single command using the runners shell
       - name: Build Docker Image
         run: docker build -t fastapi-app .
@@ -42,8 +36,9 @@ jobs:
           sudo apt-get install -y curl
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
-      - name: Scan image in registry
-        run: trivy fs --no-progress .
+      - name: Scan Trivy
+        run: |
+          trivy image --exit-code 1 --severity HIGH,CRITICAL fastapi-app
  
       # - name: Scan Trivy
       #   run: |
