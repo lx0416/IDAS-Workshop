@@ -43,7 +43,7 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
       - name: Scan image in registry
-        run: trivy image --no-progress fastapi-app
+        run: trivy fs --no-progress fastapi-app
  
       # - name: Scan Trivy
       #   run: |
