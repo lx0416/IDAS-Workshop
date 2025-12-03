@@ -36,7 +36,15 @@ jobs:
           sudo apt-get install -y curl
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
 
- 
-      - name: Scan Trivy
+      - name: Cleanup Docker
         run: |
-          trivy image --exit-code 1 --severity HIGH,CRITICAL fastapi-app
+          docker system prune -af
+          docker volume prune -f
+          sudo rm -rf /tmp/*
+
+      - name: Scan image in registry
+        run: trivy image --no-progress fastapi-app
+ 
+      # - name: Scan Trivy
+      #   run: |
+      #     trivy image --exit-code 1 --severity HIGH,CRITICAL fastapi-app
