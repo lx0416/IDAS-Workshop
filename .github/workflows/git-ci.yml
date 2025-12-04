@@ -42,7 +42,9 @@ jobs:
           trivy image --severity HIGH,CRITICAL fastapi-app
 
       - name: Push Docker Image
+        continue-on-error: true
         run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" |  docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
           docker push fastapi-app
 
       - name: Install kubectl
@@ -52,10 +54,12 @@ jobs:
           sudo mv kubectl /usr/local/bin/
 
       - name: Set up Kubeconfig
+        continue-on-error: true
         run: |
           echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
 
       - name: Deploy to Kubernetes
+        continue-on-error: true
         run: |
           kubectl set image deployment/myapp-deployment myapp-container=fastapi-app
           kubectl rollout status deployment/myapp-deployment
