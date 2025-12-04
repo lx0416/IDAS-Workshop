@@ -37,9 +37,9 @@ jobs:
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
           
       - name: Scan Trivy
+        continue-on-error: true
         run: |
           trivy image --severity HIGH,CRITICAL fastapi-app
-          continue-on-error: true
 
       - name: Push Docker Image
         run: |
